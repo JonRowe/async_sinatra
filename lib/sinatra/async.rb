@@ -132,9 +132,9 @@ module Sinatra #:nodoc:
         if settings.show_exceptions?
           printer = Sinatra::ShowExceptions.new(proc{ raise boom })
           s, h, b = printer.call(request.env)
-          response.status = s
-          response.headers.replace(h)
-          response.body = b
+          request.env['async.callback'][
+            [s, h, b]
+          ]
         else
           body(handle_exception!(boom))
         end
